@@ -66,11 +66,21 @@ class BlogService extends Service {
     if (!user) {
       return { code: 401, body: { status: false, msg: '用户名或密码错误' } };
     }
+    const { _id, name } = user;
     const token = this.app.jwt.sign({
-      name: user.name,
-      id: user._id,
+      _id, name,
     }, this.app.config.jwt.secret);
     return { code: 200, body: { status: true, msg: '登陆成功', data: { user, token } } };
+  }
+
+  // 修改用户信息
+  async updateUser(id, params) {
+    let user = await this.ctx.model.User.findByIdAndUpdate(id, params);
+    if (!user) {
+      return { code: 500, body: { status: false, msg: '修改失败' } };
+    }
+    user = await this.ctx.model.User.findById(id);
+    return { code: 200, body: { status: true, msg: '修改成功', user } };
   }
 
 }
