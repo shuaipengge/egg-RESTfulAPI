@@ -48,6 +48,17 @@ class BlogController extends Controller {
     ctx.body = { ...body };
     ctx.status = code;
   }
+
+  async login() {
+    const ctx = this.ctx;
+    // 接收并校验参数
+    ctx.validate(createRule, ctx.request.body);
+    // 处理逻辑
+    const { code, body } = await ctx.service.user.login(ctx.request.body);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
 }
 module.exports = BlogController;
 

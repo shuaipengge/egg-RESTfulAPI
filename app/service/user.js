@@ -60,6 +60,19 @@ class BlogService extends Service {
     return { code: 200, body: { status: true, data } };
   }
 
+  // 用户登陆
+  async login(params) {
+    const user = await this.ctx.model.User.findOne(params);
+    if (!user) {
+      return { code: 401, body: { status: false, msg: '用户名或密码错误' } };
+    }
+    const token = this.app.jwt.sign({
+      name: user.name,
+      id: user._id,
+    }, this.app.config.jwt.secret);
+    return { code: 200, body: { status: true, msg: '登陆成功', data: { user, token } } };
+  }
+
 }
 
 module.exports = BlogService;
