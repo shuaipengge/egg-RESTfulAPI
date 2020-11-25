@@ -37,11 +37,11 @@ module.exports = appInfo => {
   };
 
   // 关闭安全威胁csrf防范
-  // config.security = {
-  //   csrf: {
-  //     enable: false,
-  //   },
-  // };
+  config.security = {
+    csrf: {
+      enable: false,
+    },
+  };
 
   // add your user config here
   const userConfig = {

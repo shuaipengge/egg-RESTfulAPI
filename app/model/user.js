@@ -10,27 +10,27 @@ module.exports = app => {
     // 用户的状态
     status: { type: Number, default: 1, required: true },
     // 用户的姓名
-    name: { type: String, required: true },
+    name: { type: String, required: false },
     // 等级
-    level: { type: Number },
+    level: { type: Number, required: false },
     // 用户密码
     password: { type: String, required: true, select: false },
     // 用户背景图片
-    home_img: { type: String },
+    home_img: { type: String, required: false },
     // 用户Email
-    email: { type: String, select: false },
+    email: { type: String, required: true, select: false },
     // 用户手机号码
-    phone_number: { type: String, select: false },
+    phone_number: { type: String, required: false, select: false },
     // 用户设备型号
-    phone_no: { type: String, select: false },
+    phone_no: { type: String, required: false, select: false },
     // 用户本次登陆IP
-    log_ip_1: { type: String },
+    log_ip_1: { type: String, required: false },
     // 用户头像
-    avatar_url: { type: String },
+    avatar_url: { type: String, required: false },
     // 性别
     gender: { type: String, enum: [ 'male', 'female' ], default: 'male', required: true },
     // 个性签名
-    headline: { type: String },
+    headline: { type: String, required: false },
     // 居住地
     locations: { type: [{ type: Schema.Types.ObjectId, ref: 'Topic' }], select: false },
     // 所在行业
@@ -60,7 +60,7 @@ module.exports = app => {
       }], select: false,
     },
     // 个人简介
-    personal_profile: { type: String, select: false },
+    personal_profile: { type: String, select: false, required: false },
     // 关注的用户
     following: {
       type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
