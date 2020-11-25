@@ -20,7 +20,32 @@ class BlogController extends Controller {
     const { code, body } = await ctx.service.user.create(ctx.request.body);
 
     // 返回响应体和状态码
-    ctx.body = { body };
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async show() {
+    const ctx = this.ctx;
+    if (ctx.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      // 处理逻辑
+      const { code, body } = await ctx.service.user.show(ctx.params.id, ctx.query);
+      // 返回响应体和状态码
+      ctx.body = { ...body };
+      ctx.status = code;
+      return;
+    }
+    ctx.body = { status: false, msg: 'ID不合法' };
+    ctx.status = 422;
+  }
+
+  async index() {
+    const ctx = this.ctx;
+
+    // 处理逻辑
+    const { code, body } = await ctx.service.user.index(ctx.query);
+
+    // 返回响应体和状态码
+    ctx.body = { ...body };
     ctx.status = code;
   }
 }

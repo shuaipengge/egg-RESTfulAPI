@@ -8,7 +8,7 @@ module.exports = app => {
   const UserSchema = new Schema({
     __v: { type: Number, select: false },
     // 用户的状态
-    status: { type: Number, default: 1, required: true },
+    status: { type: Number, default: 1, required: true, select: false },
     // 用户的姓名
     name: { type: String, required: false },
     // 等级
@@ -23,8 +23,6 @@ module.exports = app => {
     phone_number: { type: String, required: false, select: false },
     // 用户设备型号
     phone_no: { type: String, required: false, select: false },
-    // 用户本次登陆IP
-    log_ip_1: { type: String, required: false },
     // 用户头像
     avatar_url: { type: String, required: false },
     // 性别
