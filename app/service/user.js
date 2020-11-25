@@ -67,6 +67,7 @@ class BlogService extends Service {
       return { code: 401, body: { status: false, msg: '用户名或密码错误' } };
     }
     const { _id, name } = user;
+    // TODO 记录登陆事件 时间和IP
     const token = this.app.jwt.sign({
       _id, name,
     }, this.app.config.jwt.secret);
@@ -81,6 +82,16 @@ class BlogService extends Service {
     }
     user = await this.ctx.model.User.findById(id);
     return { code: 200, body: { status: true, msg: '修改成功', user } };
+  }
+
+  // 用户注销账号
+  async deleteUser(id) {
+    let user = await this.ctx.model.User.findByIdAndUpdate(id, { status: 0 });
+    if (!user) {
+      return { code: 500, body: { status: false, msg: '注销失败' } };
+    }
+    user = await this.ctx.model.User.findById(id);
+    return { code: 204, body: { status: true, msg: '注销成功', user } };
   }
 
 }

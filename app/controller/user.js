@@ -90,5 +90,17 @@ class BlogController extends Controller {
     ctx.body = { ...body };
     ctx.status = code;
   }
+
+  async deleteUser() {
+    const ctx = this.ctx;
+    if (ctx.params.id !== ctx.state.user._id) {
+      return { code: 403, body: { status: false, msg: '没有权限' } };
+    }
+    // 处理逻辑
+    const { code, body } = await ctx.service.user.deleteUser(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
 }
 module.exports = BlogController;
