@@ -167,6 +167,12 @@ class UserService extends Service {
     return { code: 404, body: { status: false, msg: '您未关注该话题' } };
   }
 
+  // 用户的问题列表
+  async listQuestion(id) {
+    const data = await this.ctx.model.Question.find({ questioner: id });
+    return { code: 200, body: { status: true, data } };
+  }
+
 }
 
 module.exports = UserService;

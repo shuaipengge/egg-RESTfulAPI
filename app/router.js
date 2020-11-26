@@ -28,12 +28,16 @@ module.exports = app => {
   router.delete('/api/v1/user/followingTopics/:id', app.jwt, checkTopicExist, controller.user.unfollowTopic);
   router.get('/api/v1/user/:id/followingTopics', controller.user.listFollowingTopics);
 
+  // user -> question
+  router.get('/api/v1/user/:id/questions', controller.user.listQuestion);
+
   // Topic
   router.get('/api/v1/topic', controller.topic.find);
   router.post('/api/v1/topic', controller.topic.create);
   router.get('/api/v1/topic/:id', checkTopicExist, controller.topic.findById);
   router.get('/api/v1/topic/:id/followers', checkTopicExist, controller.topic.listTopicFollowers);
   router.put('/api/v1/topic/:id', checkTopicExist, controller.topic.update);
+  router.get('/api/v1/topic/:id/questions', controller.topic.listQuestion);
 
   // Question
   router.get('/api/v1/question', controller.question.find);

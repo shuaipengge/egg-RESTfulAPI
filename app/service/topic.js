@@ -47,6 +47,12 @@ class TopicService extends Service {
     return { code: 200, body: { status: true, data } };
   }
 
+  // 获取话题下的问题
+  async listQuestion(id) {
+    const data = await this.ctx.model.Question.find({ topics: id });
+    return { code: 200, body: { status: true, data } };
+  }
+
 }
 
 module.exports = TopicService;
