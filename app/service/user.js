@@ -2,7 +2,7 @@
 
 const Service = require('egg').Service;
 
-class BlogService extends Service {
+class UserService extends Service {
 
   // 用户注册
   async create(params) {
@@ -134,4 +134,4 @@ class BlogService extends Service {
 
 }
 
-module.exports = BlogService;
+module.exports = UserService;

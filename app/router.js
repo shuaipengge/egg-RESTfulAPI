@@ -8,6 +8,8 @@ module.exports = app => {
 
   const { router, controller } = app;
   router.get('/', controller.home.index);
+
+  // User
   router.resources('user', '/api/v1/user', controller.user);
   router.post('/api/v1/user/login', controller.user.login);
   router.delete('/api/v1/user/delete/:id', app.jwt, controller.user.deleteUser);
@@ -17,4 +19,7 @@ module.exports = app => {
   router.get('/api/v1/user/:id/followers', controller.user.listFollowers);
   router.put('/api/v1/user/following/:id', app.jwt, checkUserExist, controller.user.follow);
   router.delete('/api/v1/user/following/:id', app.jwt, checkUserExist, controller.user.unfollow);
+
+  // Topic
+  router.get('/api/v1/topic', controller.topic.find);
 };

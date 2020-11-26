@@ -20,7 +20,7 @@ const updateRule = {
   personal_profile: { type: 'string', required: false },
 };
 
-class BlogController extends Controller {
+class UserController extends Controller {
   async create() {
     const ctx = this.ctx;
 
@@ -140,4 +140,4 @@ class BlogController extends Controller {
     ctx.status = code;
   }
 }
-module.exports = BlogController;
+module.exports = UserController;
