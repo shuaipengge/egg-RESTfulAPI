@@ -16,8 +16,6 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1606221621840_7108';
 
   // add your middleware config here
-  config.middleware = [];
-
   // 加载 errorHandler 中间件
   config.middleware = [ 'errorHandler' ];
 

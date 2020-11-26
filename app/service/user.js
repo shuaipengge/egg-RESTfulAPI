@@ -1,6 +1,5 @@
 'use strict';
 
-// app/service/blog.js
 const Service = require('egg').Service;
 
 class BlogService extends Service {
@@ -92,6 +91,33 @@ class BlogService extends Service {
     }
     user = await this.ctx.model.User.findById(id);
     return { code: 204, body: { status: true, msg: '注销成功', user } };
+  }
+
+  // 获取某个用户的关注列表
+  async listFollowing(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ following').populate('following');
+    if (!user) {
+      return { code: 404, body: { status: false, msg: '用户不存在' } };
+    }
+    return { code: 200, body: { status: true, msg: '获取关注列表成功', data: user.following } };
+  }
+
+  // 获取某位用户的粉丝列表
+  async listFollowers(id) {
+    const data = await this.ctx.model.User.find({ following: id });
+    return { code: 200, body: { status: true, msg: '获取粉丝列表成功', data } };
+  }
+
+  // 关注用户
+  async follow(userID, meID) {
+    const me = await this.ctx.model.User.findById(meID).select('+ following');
+    // 判断是否已经关注
+    if (!me.following.map(id => id.toString()).includes(userID)) {
+      me.following.push(userID);
+      me.save();
+      return { code: 200, body: { status: true, msg: '关注成功' } };
+    }
+    return { code: 200, body: { status: false, msg: '请勿重复关注' } };
   }
 
 }

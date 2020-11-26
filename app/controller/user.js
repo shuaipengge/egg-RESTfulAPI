@@ -48,6 +48,7 @@ class BlogController extends Controller {
       ctx.status = code;
       return;
     }
+    // TODO 抽离id判断中间件
     ctx.body = { status: false, msg: 'ID不合法' };
     ctx.status = 422;
   }
@@ -98,6 +99,33 @@ class BlogController extends Controller {
     }
     // 处理逻辑
     const { code, body } = await ctx.service.user.deleteUser(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async listFollowing() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body } = await ctx.service.user.listFollowing(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async listFollowers() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body } = await ctx.service.user.listFollowers(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async follow() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.follow(ctx.params.id, ctx.state.user._id);
     // 返回响应体和状态码
     ctx.body = { ...body };
     ctx.status = code;
