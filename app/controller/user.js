@@ -139,5 +139,32 @@ class UserController extends Controller {
     ctx.body = { ...body };
     ctx.status = code;
   }
+
+  async followTopic() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.followTopic(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async listFollowingTopics() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listFollowingTopics(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async unfollowTopic() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.unfollowTopic(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
 }
 module.exports = UserController;

@@ -132,6 +132,41 @@ class UserService extends Service {
     return { code: 204, body: {} };
   }
 
+  // 关注话题
+  async followTopic(topicID, meID) {
+    const me = await this.ctx.model.User.findById(meID).select('+ followingTopics');
+    // 判断是否已经关注
+    if (!me.followingTopics.map(id => id.toString()).includes(topicID)) {
+      me.followingTopics.push(topicID);
+      me.save();
+      return { code: 200, body: { status: true, msg: '关注成功' } };
+    }
+    return { code: 200, body: { status: false, msg: '请勿重复关注' } };
+  }
+
+  // 获取用户关注的话题
+  async listFollowingTopics(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ followingTopics').populate('followingTopics');
+    if (!user) {
+      return { code: 404, body: { status: false, msg: '用户不存在' } };
+    }
+    const data = user.followingTopics;
+    return { code: 200, body: { status: true, msg: '获取成功', data } };
+  }
+
+  // 取消关注话题
+  async unfollowTopic(id, meID) {
+    const me = await this.ctx.model.User.findById(meID).select('+ followingTopics');
+    const index = me.followingTopics.map(id => id.toString()).indexOf(id);
+    // 判断是否已经关注
+    if (index > -1) {
+      me.followingTopics.splice(index, 1);
+      me.save();
+      return { code: 200, body: { status: true, msg: '取消关注成功' } };
+    }
+    return { code: 404, body: { status: false, msg: '您未关注该话题' } };
+  }
+
 }
 
 module.exports = UserService;

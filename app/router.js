@@ -5,6 +5,7 @@
  */
 module.exports = app => {
   const checkUserExist = app.middleware.checkUserExist();
+  const checkTopicExist = app.middleware.checkTopicExist();
 
   const { router, controller } = app;
   router.get('/', controller.home.index);
@@ -20,6 +21,16 @@ module.exports = app => {
   router.put('/api/v1/user/following/:id', app.jwt, checkUserExist, controller.user.follow);
   router.delete('/api/v1/user/following/:id', app.jwt, checkUserExist, controller.user.unfollow);
 
+  // User -> Topic
+  router.put('/api/v1/user/followingTopics/:id', app.jwt, checkTopicExist, controller.user.followTopic);
+  router.delete('/api/v1/user/followingTopics/:id', app.jwt, checkTopicExist, controller.user.unfollowTopic);
+  router.get('/api/v1/user/:id/followingTopics', controller.user.listFollowingTopics);
+
   // Topic
   router.get('/api/v1/topic', controller.topic.find);
+  router.post('/api/v1/topic', controller.topic.create);
+  router.get('/api/v1/topic/:id', checkTopicExist, controller.topic.findById);
+  router.get('/api/v1/topic/:id/followers', checkTopicExist, controller.topic.listTopicFollowers);
+  router.put('/api/v1/topic/:id', checkTopicExist, controller.topic.update);
+
 };
