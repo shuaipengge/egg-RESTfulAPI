@@ -16,4 +16,5 @@ module.exports = app => {
   router.get('/api/v1/user/:id/followers', controller.user.listFollowers);
   router.get('/api/v1/user/:id/followers', controller.user.listFollowers);
   router.put('/api/v1/user/following/:id', app.jwt, checkUserExist, controller.user.follow);
+  router.delete('/api/v1/user/following/:id', app.jwt, checkUserExist, controller.user.unfollow);
 };

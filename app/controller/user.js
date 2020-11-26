@@ -130,5 +130,14 @@ class BlogController extends Controller {
     ctx.body = { ...body };
     ctx.status = code;
   }
+
+  async unfollow() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.unfollow(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
 }
 module.exports = BlogController;

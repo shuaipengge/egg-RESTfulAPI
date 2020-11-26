@@ -120,6 +120,18 @@ class BlogService extends Service {
     return { code: 200, body: { status: false, msg: '请勿重复关注' } };
   }
 
+  // 取消关注用户
+  async unfollow(userID, meID) {
+    const me = await this.ctx.model.User.findById(meID).select('+ following');
+    const index = me.following.map(id => id.toString()).indexOf(userID);
+    // 判断是否已经关注
+    if (index > -1) {
+      me.following.splice(index, 1);
+      me.save();
+    }
+    return { code: 204, body: {} };
+  }
+
 }
 
 module.exports = BlogService;
