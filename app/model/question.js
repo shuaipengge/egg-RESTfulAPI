@@ -7,6 +7,8 @@ module.exports = app => {
   // 数据库表的映射
   const questionSchema = new Schema({
     __v: { type: Number, select: false },
+    // 问题的状态
+    status: { type: Number, default: 1, required: true, select: false },
     // 问题标题
     title: { type: String, required: true },
     // 问题详情

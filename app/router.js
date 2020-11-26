@@ -6,6 +6,8 @@
 module.exports = app => {
   const checkUserExist = app.middleware.checkUserExist();
   const checkTopicExist = app.middleware.checkTopicExist();
+  const checkQuestionExist = app.middleware.checkQuestionExist();
+  const checkQuestioner = app.middleware.checkQuestioner();
 
   const { router, controller } = app;
   router.get('/', controller.home.index);
@@ -33,4 +35,10 @@ module.exports = app => {
   router.get('/api/v1/topic/:id/followers', checkTopicExist, controller.topic.listTopicFollowers);
   router.put('/api/v1/topic/:id', checkTopicExist, controller.topic.update);
 
+  // Question
+  router.get('/api/v1/question', controller.question.find);
+  router.get('/api/v1/question/:id', checkQuestionExist, controller.question.findById);
+  router.put('/api/v1/question/:id', app.jwt, checkQuestionExist, checkQuestioner, controller.question.update);
+  router.delete('/api/v1/question/:id', app.jwt, checkQuestionExist, checkQuestioner, controller.question.delete);
+  router.post('/api/v1/question', app.jwt, controller.question.create);
 };
