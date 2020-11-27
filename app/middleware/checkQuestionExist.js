@@ -3,7 +3,10 @@
 
 module.exports = () => {
   return async function checkQuestionExist(ctx, next) {
-    const question = await ctx.model.Question.findById(ctx.params.id).select(' + questioner');
+    const id = ctx.params.id ? ctx.params.id : ctx.params.questionId;
+    const question = await ctx.model.Question.findById(id).select(
+      ' + questioner'
+    );
     if (!question) {
       ctx.status = 404;
       ctx.body = { status: false, msg: '问题不存在' };

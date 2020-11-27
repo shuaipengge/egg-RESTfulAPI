@@ -8,6 +8,8 @@ module.exports = app => {
   const checkTopicExist = app.middleware.checkTopicExist();
   const checkQuestionExist = app.middleware.checkQuestionExist();
   const checkQuestioner = app.middleware.checkQuestioner();
+  const checkAnswerExist = app.middleware.checkAnswerExist();
+  const checkAnswerer = app.middleware.checkAnswerer();
 
   const { router, controller } = app;
   router.get('/', controller.home.index);
@@ -45,4 +47,11 @@ module.exports = app => {
   router.put('/api/v1/question/:id', app.jwt, checkQuestionExist, checkQuestioner, controller.question.update);
   router.delete('/api/v1/question/:id', app.jwt, checkQuestionExist, checkQuestioner, controller.question.delete);
   router.post('/api/v1/question', app.jwt, controller.question.create);
+
+  // answer
+  router.get('/api/v1/question/:questionId/answer', controller.answer.find);
+  router.get('/api/v1/answer/:id', checkAnswerExist, controller.answer.findById);
+  router.post('/api/v1/question/:questionId/answer', app.jwt, checkQuestionExist, controller.answer.create);
+  router.put('/api/v1/question/:questionId/answer/:id', app.jwt, checkAnswerExist, checkAnswerer, controller.answer.update);
+  router.delete('/api/v1/question/:questionId/answer/:id', app.jwt, checkAnswerExist, checkAnswerer, controller.answer.delete);
 };
