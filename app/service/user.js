@@ -128,8 +128,9 @@ class UserService extends Service {
     if (index > -1) {
       me.following.splice(index, 1);
       me.save();
+      return { code: 200, body: { status: true, msg: '取消关注成功' } };
     }
-    return { code: 204, body: {} };
+    return { code: 200, body: { status: true, msg: '您未关注该用户' } };
   }
 
   // 关注话题
@@ -171,6 +172,104 @@ class UserService extends Service {
   async listQuestion(id) {
     const data = await this.ctx.model.Question.find({ questioner: id });
     return { code: 200, body: { status: true, data } };
+  }
+
+  // 获取某个用户的赞过的答案
+  async listLikingAnswers(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ likingAnswers').populate('likingAnswers');
+    if (!user) {
+      return { code: 404, body: { status: false, msg: '用户不存在' } };
+    }
+    const data = user.likingAnswers;
+    return { code: 200, body: { status: true, msg: '获取赞过列表', data } };
+  }
+
+  // TODO 重复操作判断需要全局排查
+
+  // 赞答案
+  async likeAnswer(id, meId) {
+    let me = await this.ctx.model.User.findById(meId).select('+ likingAnswers');
+    // 判断是否已经点赞
+    if (!me.likingAnswers.map(id => id.toString()).includes(id)) {
+      me.likingAnswers.push(id);
+      me.save();
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: 1 } });
+      // -----
+      me = await this.ctx.model.User.findById(meId).select('+ dislikingAnswers');
+      const index = me.dislikingAnswers.map(id => id.toString()).indexOf(id);
+      // 判断是否已经
+      if (index > -1) {
+        await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: 1 } });
+        me.dislikingAnswers.splice(index, 1);
+        me.save();
+      }
+      // -----
+      return { code: 200, body: { status: true, msg: '赞成功' } };
+    }
+    return { code: 200, body: { status: false, msg: '请勿重复点赞' } };
+  }
+
+  // 取消赞
+  async unlikeAnswer(id, meId) {
+    const me = await this.ctx.model.User.findById(meId).select('+ likingAnswers');
+    const index = me.likingAnswers.map(id => id.toString()).indexOf(id);
+    // 判断是否赞过
+    if (index > -1) {
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: -1 } });
+      me.likingAnswers.splice(index, 1);
+      me.save();
+      return { code: 200, body: { status: true, msg: '已取消赞' } };
+    }
+    return { code: 200, body: { status: false, msg: '您未对该答案点赞' } };
+  }
+
+  // 获取某个用户的踩过的答案
+  async listDislikingAnswers(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ dislikingAnswers').populate('dislikingAnswers');
+    if (!user) {
+      return { code: 200, body: { status: false, msg: '用户不存在' } };
+    }
+    const data = user.dislikingAnswers;
+    return { code: 200, body: { status: true, msg: '获取踩过列表', data } };
+  }
+
+  // 踩答案
+  async dislikeAnswer(id, meId) {
+    let me = await this.ctx.model.User.findById(meId).select('+ dislikingAnswers');
+    // 判断是否已经踩过答案
+    if (!me.dislikingAnswers.map(id => id.toString()).includes(id)) {
+      me.dislikingAnswers.push(id);
+      me.save();
+      // TODO 有待优化 赞踩互斥逻辑
+      // ----
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: -1 } });
+      // 取消赞
+      me = await this.ctx.model.User.findById(meId).select('+ likingAnswers');
+      const index = me.likingAnswers.map(id => id.toString()).indexOf(id);
+      // 判断是否赞过
+      if (index > -1) {
+        await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: -1 } });
+        me.likingAnswers.splice(index, 1);
+        me.save();
+      }
+      // ---
+      return { code: 200, body: { status: true, msg: '踩成功' } };
+    }
+    return { code: 200, body: { status: false, msg: '您已踩过该答案' } };
+  }
+
+  // 取消踩
+  async undislikeAnswer(id, meId) {
+    const me = await this.ctx.model.User.findById(meId).select('+ dislikingAnswers');
+    const index = me.dislikingAnswers.map(id => id.toString()).indexOf(id);
+    // 判断是否已经
+    if (index > -1) {
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: 1 } });
+      me.dislikingAnswers.splice(index, 1);
+      me.save();
+      return { code: 200, body: { status: true, msg: '已取消踩' } };
+    }
+    return { code: 200, body: { status: false, msg: '您未踩过该答案' } };
   }
 
 }

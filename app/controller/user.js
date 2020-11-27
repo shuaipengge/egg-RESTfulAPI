@@ -175,5 +175,59 @@ class UserController extends Controller {
     ctx.body = { ...body };
     ctx.status = code;
   }
+
+  async listLikingAnswers() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listLikingAnswers(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async likeAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.likeAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async unlikeAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.unlikeAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async listDislikingAnswers() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listDislikingAnswers(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async dislikeAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.dislikeAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async undislikeAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.undislikeAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
 }
 module.exports = UserController;

@@ -30,8 +30,16 @@ module.exports = app => {
   router.delete('/api/v1/user/followingTopics/:id', app.jwt, checkTopicExist, controller.user.unfollowTopic);
   router.get('/api/v1/user/:id/followingTopics', controller.user.listFollowingTopics);
 
-  // user -> question
+  // user -> Question
   router.get('/api/v1/user/:id/questions', controller.user.listQuestion);
+
+  // user -> Answer
+  router.get('/api/v1/user/:id/likingAnswer', controller.user.listLikingAnswers);
+  router.get('/api/v1/user/:id/dislikingAnswer', controller.user.listDislikingAnswers);
+  router.put('/api/v1/user/likingAnswer/:id', app.jwt, checkAnswerExist, controller.user.likeAnswer);
+  router.put('/api/v1/user/dislikingAnswer/:id', app.jwt, checkAnswerExist, controller.user.dislikeAnswer);
+  router.delete('/api/v1/user/likingAnswer/:id', app.jwt, checkAnswerExist, controller.user.unlikeAnswer);
+  router.delete('/api/v1/user/dislikingAnswer/:id', app.jwt, checkAnswerExist, controller.user.undislikeAnswer);
 
   // Topic
   router.get('/api/v1/topic', controller.topic.find);
@@ -48,7 +56,7 @@ module.exports = app => {
   router.delete('/api/v1/question/:id', app.jwt, checkQuestionExist, checkQuestioner, controller.question.delete);
   router.post('/api/v1/question', app.jwt, controller.question.create);
 
-  // answer
+  // Answer
   router.get('/api/v1/question/:questionId/answer', controller.answer.find);
   router.get('/api/v1/answer/:id', checkAnswerExist, controller.answer.findById);
   router.post('/api/v1/question/:questionId/answer', app.jwt, checkQuestionExist, controller.answer.create);
