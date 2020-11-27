@@ -40,6 +40,9 @@ module.exports = app => {
   router.put('/api/v1/user/dislikingAnswer/:id', app.jwt, checkAnswerExist, controller.user.dislikeAnswer);
   router.delete('/api/v1/user/likingAnswer/:id', app.jwt, checkAnswerExist, controller.user.unlikeAnswer);
   router.delete('/api/v1/user/dislikingAnswer/:id', app.jwt, checkAnswerExist, controller.user.undislikeAnswer);
+  router.get('/api/v1/user/:id/collectingAnswer', controller.user.listCollectingAnswers);
+  router.put('/api/v1/user/collectingAnswer/:id', app.jwt, checkAnswerExist, controller.user.CollectAnswer);
+  router.delete('/api/v1/user/collectingAnswer/:id', app.jwt, checkAnswerExist, controller.user.unCollectAnswer);
 
   // Topic
   router.get('/api/v1/topic', controller.topic.find);

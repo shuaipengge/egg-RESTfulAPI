@@ -229,5 +229,32 @@ class UserController extends Controller {
     ctx.body = { ...body };
     ctx.status = code;
   }
+
+  async listCollectingAnswers() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listCollectingAnswers(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async CollectAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.CollectAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async unCollectAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.unCollectAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
 }
 module.exports = UserController;

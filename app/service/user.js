@@ -272,6 +272,41 @@ class UserService extends Service {
     return { code: 200, body: { status: false, msg: '您未踩过该答案' } };
   }
 
+  // 获取某个用户的收藏过的答案
+  async listCollectingAnswers(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ collectingAnswers').populate('collectingAnswers');
+    if (!user) {
+      return { code: 404, body: { status: false, msg: '用户不存在' } };
+    }
+    const data = user.collectingAnswers;
+    return { code: 200, body: { status: true, msg: '获取收藏列表', data } };
+  }
+
+  // 收藏答案
+  async CollectAnswer(id, meId) {
+    const me = await this.ctx.model.User.findById(meId).select('+ collectingAnswers');
+    // 判断是否已经收藏
+    if (!me.collectingAnswers.map(id => id.toString()).includes(id)) {
+      me.collectingAnswers.push(id);
+      me.save();
+      return { code: 200, body: { status: true, msg: '收藏成功' } };
+    }
+    return { code: 404, body: { status: false, msg: '请勿重复收藏' } };
+  }
+
+  // 取消收藏答案
+  async unCollectAnswer(id, meId) {
+    const me = await this.ctx.model.User.findById(meId).select('+ collectingAnswers');
+    const index = me.collectingAnswers.map(id => id.toString()).indexOf(id);
+    // 判断是否已经收藏
+    if (index > -1) {
+      me.collectingAnswers.splice(index, 1);
+      me.save();
+      return { code: 200, body: { status: true, msg: '取消收藏成功' } };
+    }
+    return { code: 404, body: { status: false, msg: '您未收藏该回答' } };
+  }
+
 }
 
 module.exports = UserService;
