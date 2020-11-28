@@ -18,7 +18,9 @@ module.exports = app => {
   router.get('/', controller.home.index);
 
   // User
-  router.resources('user', '/api/v1/user', app.jwt, checkAdmin, controller.user);
+  router.get('/api/v1/user', app.jwt, checkAdmin, controller.user.index);
+  router.get('/api/v1/user/:id', controller.user.findeById);
+  router.post('/api/v1/user', controller.user.register);
   router.post('/api/v1/user/login', controller.user.login);
   router.delete('/api/v1/user/delete/:id', app.jwt, checkAdmin, controller.user.deleteUser);
   router.put('/api/v1/user/update/:id', app.jwt, controller.user.updateUser);

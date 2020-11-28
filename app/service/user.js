@@ -5,7 +5,7 @@ const Service = require('egg').Service;
 class UserService extends Service {
 
   // 用户注册
-  async create(params) {
+  async register(params) {
     const { email, password } = params;
     // 判断邮箱是否被注册
     const repeatedUser = await this.ctx.model.User.findOne({ email });
@@ -28,7 +28,7 @@ class UserService extends Service {
   }
 
   // 查看用户信息
-  async show(userid, query) {
+  async findeById(userid, query) {
     const { fields = '' } = query;
     const selectFields = fields.split(';').filter(f => f).map(f => ' +' + f)
       .join('');

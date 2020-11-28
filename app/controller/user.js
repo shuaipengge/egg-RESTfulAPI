@@ -21,25 +21,22 @@ const updateRule = {
 };
 
 class UserController extends Controller {
-  async create() {
+  async register() {
     const ctx = this.ctx;
-
     // 接收并校验参数
     ctx.validate(createRule, ctx.request.body);
-
     // 处理逻辑
-    const { code, body } = await ctx.service.user.create(ctx.request.body);
-
+    const { code, body } = await ctx.service.user.register(ctx.request.body);
     // 返回响应体和状态码
     ctx.body = { ...body };
     ctx.status = code;
   }
 
-  async show() {
+  async findeById() {
     const ctx = this.ctx;
     if (ctx.params.id.match(/^[0-9a-fA-F]{24}$/)) {
       // 处理逻辑
-      const { code, body } = await ctx.service.user.show(
+      const { code, body } = await ctx.service.user.findeById(
         ctx.params.id,
         ctx.query
       );
@@ -55,10 +52,8 @@ class UserController extends Controller {
 
   async index() {
     const ctx = this.ctx;
-
     // 处理逻辑
     const { code, body } = await ctx.service.user.index(ctx.query);
-
     // 返回响应体和状态码
     ctx.body = { ...body };
     ctx.status = code;
