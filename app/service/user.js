@@ -15,6 +15,12 @@ class UserService extends Service {
     const name = `可爱的我${Math.random().toString().substring(2, 8)}`;
     // TODO MD5加密🔐
     const user = await new this.ctx.model.User({ name, email, password }).save();
+    const log = {
+      title: 'REGISTER',
+      address: this.ctx.request.ip,
+      description: `from: ${email}`,
+    };
+    await new this.ctx.model.Eventlog(log).save();
     if (user) {
       return { code: 200, body: { status: true, msg: '注册成功' } };
     }
@@ -61,15 +67,21 @@ class UserService extends Service {
 
   // 用户登陆
   async login(params) {
-    const user = await this.ctx.model.User.findOne(params);
+    const user = await this.ctx.model.User.findOne(params).select(' +status');
     if (!user) {
       return { code: 401, body: { status: false, msg: '用户名或密码错误' } };
     }
-    const { _id, name } = user;
-    // TODO 记录登陆事件 时间和IP
+    const { _id, name, status } = user;
+
     const token = this.app.jwt.sign({
-      _id, name,
+      _id, name, status,
     }, this.app.config.jwt.secret);
+    const log = {
+      title: 'LOGIN',
+      address: this.ctx.request.ip,
+      eventer: _id,
+    };
+    await new this.ctx.model.Eventlog(log).save();
     return { code: 200, body: { status: true, msg: '登陆成功', data: { user, token } } };
   }
 

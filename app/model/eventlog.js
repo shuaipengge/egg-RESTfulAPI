@@ -14,7 +14,7 @@ module.exports = app => {
     // 事件描述
     description: { type: String, select: false },
     // 源自用户
-    eventer: { type: Schema.Types.ObjectId, ref: 'User', required: false, select: true },
+    eventer: { type: Schema.Types.ObjectId, ref: 'User', required: false, select: false },
   }, { timestamps: true });
 
   return mongoose.model('Eventlog', eventlogSchema, 'eventlog');

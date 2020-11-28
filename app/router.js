@@ -12,14 +12,15 @@ module.exports = app => {
   const checkAnswerer = app.middleware.checkAnswerer();
   const checkCommentExist = app.middleware.checkCommentExist();
   const checkCommentator = app.middleware.checkCommentator();
+  const checkAdmin = app.middleware.checkAdmin();
 
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
   // User
-  router.resources('user', '/api/v1/user', controller.user);
+  router.resources('user', '/api/v1/user', app.jwt, checkAdmin, controller.user);
   router.post('/api/v1/user/login', controller.user.login);
-  router.delete('/api/v1/user/delete/:id', app.jwt, controller.user.deleteUser);
+  router.delete('/api/v1/user/delete/:id', app.jwt, checkAdmin, controller.user.deleteUser);
   router.put('/api/v1/user/update/:id', app.jwt, controller.user.updateUser);
   router.get('/api/v1/user/:id/following', controller.user.listFollowing);
   router.get('/api/v1/user/:id/followers', controller.user.listFollowers);
@@ -86,4 +87,8 @@ module.exports = app => {
   router.get('/api/v1/questions/:questionId/answers/:answerId/comments/:id', checkCommentExist, controller.comment.findById);
   router.put('/api/v1/questions/:questionId/answers/:answerId/comments/:id', app.jwt, checkCommentExist, checkCommentator, controller.comment.update);
   router.delete('/api/v1/questions/:questionId/answers/:answerId/comments/:id', app.jwt, checkCommentExist, checkCommentator, controller.comment.delete);
+
+  // Eventlog
+  router.get('/api/v1/eventlog', app.jwt, checkAdmin, controller.eventlog.index);
+  router.get('/api/v1/eventlog/:id', app.jwt, checkAdmin, controller.eventlog.findById);
 };
