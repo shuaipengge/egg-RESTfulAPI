@@ -3,7 +3,6 @@
 const Service = require('egg').Service;
 
 class UserService extends Service {
-  // TODO 收藏的回答
   // 回答列表
   async find(questionId, query) {
     const { per_page = 10 } = query;

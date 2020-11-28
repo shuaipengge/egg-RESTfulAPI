@@ -21,6 +21,10 @@ module.exports = app => {
     rootCommentId: { type: String },
     // 回复给某用户的id
     replyTo: { type: Schema.Types.ObjectId, ref: 'User' },
+    // 👍赞数量
+    liking: { type: Number, required: true, default: 0 },
+    // 👎踩数量
+    disliking: { type: Number, required: true, default: 0 },
   }, { timestamps: true });
 
   return mongoose.model('Comment', commentSchema, 'comment');

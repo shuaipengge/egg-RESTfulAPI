@@ -73,5 +73,5 @@ module.exports = app => {
   router.post('/api/v1/questions/:questionId/answers/:answerId/comments', app.jwt, controller.comment.create);
   router.get('/api/v1/questions/:questionId/answers/:answerId/comments/:id', checkCommentExist, controller.comment.findById);
   router.put('/api/v1/questions/:questionId/answers/:answerId/comments/:id', app.jwt, checkCommentExist, checkCommentator, controller.comment.update);
-  router.delete('/api/v1/questions/:questionId/answers/:answerId/comments/:id', checkCommentExist, controller.comment.delete);
+  router.delete('/api/v1/questions/:questionId/answers/:answerId/comments/:id', app.jwt, checkCommentExist, checkCommentator, controller.comment.delete);
 };

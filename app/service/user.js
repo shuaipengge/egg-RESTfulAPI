@@ -193,13 +193,13 @@ class UserService extends Service {
     if (!me.likingAnswers.map(id => id.toString()).includes(id)) {
       me.likingAnswers.push(id);
       me.save();
-      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: 1 } });
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { liking: 1 } });
       // -----
       me = await this.ctx.model.User.findById(meId).select('+ dislikingAnswers');
       const index = me.dislikingAnswers.map(id => id.toString()).indexOf(id);
       // 判断是否已经
       if (index > -1) {
-        await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: 1 } });
+        await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { disliking: 1 } });
         me.dislikingAnswers.splice(index, 1);
         me.save();
       }
@@ -215,7 +215,7 @@ class UserService extends Service {
     const index = me.likingAnswers.map(id => id.toString()).indexOf(id);
     // 判断是否赞过
     if (index > -1) {
-      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: -1 } });
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { liking: -1 } });
       me.likingAnswers.splice(index, 1);
       me.save();
       return { code: 200, body: { status: true, msg: '已取消赞' } };
@@ -242,13 +242,13 @@ class UserService extends Service {
       me.save();
       // TODO 有待优化 赞踩互斥逻辑
       // ----
-      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: -1 } });
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { disliking: 1 } });
       // 取消赞
       me = await this.ctx.model.User.findById(meId).select('+ likingAnswers');
       const index = me.likingAnswers.map(id => id.toString()).indexOf(id);
       // 判断是否赞过
       if (index > -1) {
-        await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: -1 } });
+        await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { liking: -1 } });
         me.likingAnswers.splice(index, 1);
         me.save();
       }
@@ -264,7 +264,7 @@ class UserService extends Service {
     const index = me.dislikingAnswers.map(id => id.toString()).indexOf(id);
     // 判断是否已经
     if (index > -1) {
-      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { voteCount: 1 } });
+      await this.ctx.model.Answer.findByIdAndUpdate(id, { $inc: { disliking: -1 } });
       me.dislikingAnswers.splice(index, 1);
       me.save();
       return { code: 200, body: { status: true, msg: '已取消踩' } };

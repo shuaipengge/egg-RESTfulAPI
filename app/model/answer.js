@@ -15,8 +15,10 @@ module.exports = app => {
     answerer: { type: Schema.Types.ObjectId, ref: 'User', required: true, select: false },
     // 问题id
     questionId: { type: String, required: true },
-    // 点赞数量
-    voteCount: { type: Number, required: true, default: 0 },
+    // 👍赞数量
+    liking: { type: Number, required: true, default: 0 },
+    // 👎踩数量
+    disliking: { type: Number, required: true, default: 0 },
   }, { timestamps: true });
 
   return mongoose.model('Answer', answerSchema, 'answer');

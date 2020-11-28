@@ -84,6 +84,16 @@ module.exports = app => {
       type: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
       select: false,
     },
+    // 赞过的评论
+    likingComment: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+      select: false,
+    },
+    // 踩过的评论
+    dislikingComment: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+      select: false,
+    },
   }, { timestamps: true });
   return mongoose.model('User', UserSchema, 'user');
 };
