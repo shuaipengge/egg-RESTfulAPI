@@ -176,10 +176,28 @@ class UserController extends Controller {
     ctx.status = code;
   }
 
+  async listAnswer() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listAnswer(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
   async listLikingAnswers() {
     const ctx = this.ctx;
     // 处理逻辑
     const { code, body = {} } = await ctx.service.user.listLikingAnswers(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async listLikingComments() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listLikingComments(ctx.params.id);
     // 返回响应体和状态码
     ctx.body = { ...body };
     ctx.status = code;
@@ -194,10 +212,28 @@ class UserController extends Controller {
     ctx.status = code;
   }
 
+  async likeComment() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.likeComment(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
   async unlikeAnswer() {
     const ctx = this.ctx;
     // 处理逻辑
     const { code, body = {} } = await ctx.service.user.unlikeAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async unlikeComment() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.unlikeComment(ctx.params.id, ctx.state.user._id);
     // 返回响应体和状态码
     ctx.body = { ...body };
     ctx.status = code;
@@ -212,6 +248,15 @@ class UserController extends Controller {
     ctx.status = code;
   }
 
+  async listDislikingComments() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.listDislikingComments(ctx.params.id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
   async dislikeAnswer() {
     const ctx = this.ctx;
     // 处理逻辑
@@ -221,10 +266,28 @@ class UserController extends Controller {
     ctx.status = code;
   }
 
+  async dislikeComment() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.dislikeComment(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
   async undislikeAnswer() {
     const ctx = this.ctx;
     // 处理逻辑
     const { code, body = {} } = await ctx.service.user.undislikeAnswer(ctx.params.id, ctx.state.user._id);
+    // 返回响应体和状态码
+    ctx.body = { ...body };
+    ctx.status = code;
+  }
+
+  async undislikeComment() {
+    const ctx = this.ctx;
+    // 处理逻辑
+    const { code, body = {} } = await ctx.service.user.undislikeComment(ctx.params.id, ctx.state.user._id);
     // 返回响应体和状态码
     ctx.body = { ...body };
     ctx.status = code;

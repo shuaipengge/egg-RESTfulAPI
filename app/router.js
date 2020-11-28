@@ -36,12 +36,24 @@ module.exports = app => {
   router.get('/api/v1/user/:id/questions', controller.user.listQuestion);
 
   // user -> Answer
+  router.get('/api/v1/user/:id/answers', controller.user.listAnswer);
+
+  // user -> Answer
   router.get('/api/v1/user/:id/likingAnswer', controller.user.listLikingAnswers);
   router.get('/api/v1/user/:id/dislikingAnswer', controller.user.listDislikingAnswers);
   router.put('/api/v1/user/likingAnswer/:id', app.jwt, checkAnswerExist, controller.user.likeAnswer);
   router.put('/api/v1/user/dislikingAnswer/:id', app.jwt, checkAnswerExist, controller.user.dislikeAnswer);
   router.delete('/api/v1/user/likingAnswer/:id', app.jwt, checkAnswerExist, controller.user.unlikeAnswer);
   router.delete('/api/v1/user/dislikingAnswer/:id', app.jwt, checkAnswerExist, controller.user.undislikeAnswer);
+
+  // user -> Comment
+  router.get('/api/v1/user/:id/likingComment', controller.user.listLikingComments);
+  router.get('/api/v1/user/:id/dislikingComment', controller.user.listDislikingComments);
+  router.put('/api/v1/user/likingComment/:id', app.jwt, checkCommentExist, controller.user.likeComment);
+  router.put('/api/v1/user/dislikingComment/:id', app.jwt, checkCommentExist, controller.user.dislikeComment);
+  router.delete('/api/v1/user/likingComment/:id', app.jwt, checkCommentExist, controller.user.unlikeComment);
+  router.delete('/api/v1/user/dislikingComment/:id', app.jwt, checkCommentExist, controller.user.undislikeComment);
+
   router.get('/api/v1/user/:id/collectingAnswer', controller.user.listCollectingAnswers);
   router.put('/api/v1/user/collectingAnswer/:id', app.jwt, checkAnswerExist, controller.user.CollectAnswer);
   router.delete('/api/v1/user/collectingAnswer/:id', app.jwt, checkAnswerExist, controller.user.unCollectAnswer);

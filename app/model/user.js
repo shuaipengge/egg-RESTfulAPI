@@ -85,12 +85,12 @@ module.exports = app => {
       select: false,
     },
     // 赞过的评论
-    likingComment: {
+    likingComments: {
       type: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
       select: false,
     },
     // 踩过的评论
-    dislikingComment: {
+    dislikingComments: {
       type: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
       select: false,
     },

@@ -174,6 +174,12 @@ class UserService extends Service {
     return { code: 200, body: { status: true, data } };
   }
 
+  // 用户的答题列表
+  async listAnswer(id) {
+    const data = await this.ctx.model.Answer.find({ answerer: id });
+    return { code: 200, body: { status: true, data } };
+  }
+
   // 获取某个用户的赞过的答案
   async listLikingAnswers(id) {
     const user = await this.ctx.model.User.findById(id).select('+ likingAnswers').populate('likingAnswers');
@@ -182,6 +188,16 @@ class UserService extends Service {
     }
     const data = user.likingAnswers;
     return { code: 200, body: { status: true, msg: '获取赞过列表', data } };
+  }
+
+  // 获取某个用户的赞过的评论
+  async listLikingComments(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ likingComments').populate('likingComments');
+    if (!user) {
+      return { code: 404, body: { status: false, msg: '用户不存在' } };
+    }
+    const data = user.likingComments;
+    return { code: 200, body: { status: true, msg: '用户赞过评论列表', data } };
   }
 
   // TODO 重复操作判断需要全局排查 赞踩数据分离
@@ -209,6 +225,29 @@ class UserService extends Service {
     return { code: 200, body: { status: false, msg: '请勿重复点赞' } };
   }
 
+  // 赞评论
+  async likeComment(id, meId) {
+    let me = await this.ctx.model.User.findById(meId).select('+ likingComments');
+    // 判断是否已经点赞
+    if (!me.likingComments.map(id => id.toString()).includes(id)) {
+      me.likingComments.push(id);
+      me.save();
+      await this.ctx.model.Comment.findByIdAndUpdate(id, { $inc: { liking: 1 } });
+      // -----
+      me = await this.ctx.model.User.findById(meId).select('+ dislikingComments');
+      const index = me.dislikingComments.map(id => id.toString()).indexOf(id);
+      // 判断是否已经
+      if (index > -1) {
+        await this.ctx.model.Comment.findByIdAndUpdate(id, { $inc: { disliking: 1 } });
+        me.dislikingComments.splice(index, 1);
+        me.save();
+      }
+      // -----
+      return { code: 200, body: { status: true, msg: '赞成功' } };
+    }
+    return { code: 200, body: { status: false, msg: '请勿重复点赞' } };
+  }
+
   // 取消赞
   async unlikeAnswer(id, meId) {
     const me = await this.ctx.model.User.findById(meId).select('+ likingAnswers');
@@ -223,6 +262,20 @@ class UserService extends Service {
     return { code: 200, body: { status: false, msg: '您未对该答案点赞' } };
   }
 
+  // 取消赞评论
+  async unlikeComment(id, meId) {
+    const me = await this.ctx.model.User.findById(meId).select('+ likingComments');
+    const index = me.likingComments.map(id => id.toString()).indexOf(id);
+    // 判断是否赞过
+    if (index > -1) {
+      await this.ctx.model.Comment.findByIdAndUpdate(id, { $inc: { liking: -1 } });
+      me.likingComments.splice(index, 1);
+      me.save();
+      return { code: 200, body: { status: true, msg: '已取消赞' } };
+    }
+    return { code: 200, body: { status: false, msg: '您未对该评论点赞' } };
+  }
+
   // 获取某个用户的踩过的答案
   async listDislikingAnswers(id) {
     const user = await this.ctx.model.User.findById(id).select('+ dislikingAnswers').populate('dislikingAnswers');
@@ -231,6 +284,16 @@ class UserService extends Service {
     }
     const data = user.dislikingAnswers;
     return { code: 200, body: { status: true, msg: '获取踩过列表', data } };
+  }
+
+  // 获取某个用户的踩过的评论
+  async listDislikingComments(id) {
+    const user = await this.ctx.model.User.findById(id).select('+ dislikingComments').populate('dislikingComments');
+    if (!user) {
+      return { code: 200, body: { status: false, msg: '用户不存在' } };
+    }
+    const data = user.dislikingComments;
+    return { code: 200, body: { status: true, msg: '用户踩过评论列表', data } };
   }
 
   // 踩答案
@@ -258,6 +321,31 @@ class UserService extends Service {
     return { code: 200, body: { status: false, msg: '您已踩过该答案' } };
   }
 
+  // 踩评论
+  async dislikeComment(id, meId) {
+    let me = await this.ctx.model.User.findById(meId).select('+ dislikingComments');
+    // 判断是否已经踩过答案
+    if (!me.dislikingComments.map(id => id.toString()).includes(id)) {
+      me.dislikingComments.push(id);
+      me.save();
+      // TODO 有待优化 赞踩互斥逻辑
+      // ----
+      await this.ctx.model.Comment.findByIdAndUpdate(id, { $inc: { disliking: 1 } });
+      // 取消赞
+      me = await this.ctx.model.User.findById(meId).select('+ likingComments');
+      const index = me.likingComments.map(id => id.toString()).indexOf(id);
+      // 判断是否赞过
+      if (index > -1) {
+        await this.ctx.model.Comment.findByIdAndUpdate(id, { $inc: { liking: -1 } });
+        me.likingComments.splice(index, 1);
+        me.save();
+      }
+      // ---
+      return { code: 200, body: { status: true, msg: '踩成功' } };
+    }
+    return { code: 200, body: { status: false, msg: '您已踩过该答案' } };
+  }
+
   // 取消踩
   async undislikeAnswer(id, meId) {
     const me = await this.ctx.model.User.findById(meId).select('+ dislikingAnswers');
@@ -270,6 +358,20 @@ class UserService extends Service {
       return { code: 200, body: { status: true, msg: '已取消踩' } };
     }
     return { code: 200, body: { status: false, msg: '您未踩过该答案' } };
+  }
+
+  // 取消踩评论
+  async undislikeComment(id, meId) {
+    const me = await this.ctx.model.User.findById(meId).select('+ dislikingComments');
+    const index = me.dislikingComments.map(id => id.toString()).indexOf(id);
+    // 判断是否踩过
+    if (index > -1) {
+      await this.ctx.model.Comment.findByIdAndUpdate(id, { $inc: { disliking: -1 } });
+      me.dislikingComments.splice(index, 1);
+      me.save();
+      return { code: 200, body: { status: true, msg: '已取消踩' } };
+    }
+    return { code: 200, body: { status: false, msg: '您未踩过该评论' } };
   }
 
   // 获取某个用户的收藏过的答案
