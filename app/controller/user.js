@@ -4,8 +4,8 @@ const Controller = require('egg').Controller;
 
 // 定义创建接口的请求参数规则
 const createRule = {
-  email: 'string',
-  password: 'string',
+  email: { type: 'string', required: true },
+  password: { type: 'string', required: true },
 };
 
 const updateRule = {

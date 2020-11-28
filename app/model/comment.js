@@ -7,6 +7,8 @@ module.exports = app => {
   // 数据库表的映射
   const commentSchema = new Schema({
     __v: { type: Number, select: false },
+    // 评论的状态
+    status: { type: Number, default: 1, required: true, select: false },
     // 评论内容
     content: { type: String, required: true },
     // 评论作者

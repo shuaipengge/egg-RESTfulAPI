@@ -184,7 +184,7 @@ class UserService extends Service {
     return { code: 200, body: { status: true, msg: '获取赞过列表', data } };
   }
 
-  // TODO 重复操作判断需要全局排查
+  // TODO 重复操作判断需要全局排查 赞踩数据分离
 
   // 赞答案
   async likeAnswer(id, meId) {

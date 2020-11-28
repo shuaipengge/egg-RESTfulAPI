@@ -10,6 +10,8 @@ module.exports = app => {
   const checkQuestioner = app.middleware.checkQuestioner();
   const checkAnswerExist = app.middleware.checkAnswerExist();
   const checkAnswerer = app.middleware.checkAnswerer();
+  const checkCommentExist = app.middleware.checkCommentExist();
+  const checkCommentator = app.middleware.checkCommentator();
 
   const { router, controller } = app;
   router.get('/', controller.home.index);
@@ -65,4 +67,11 @@ module.exports = app => {
   router.post('/api/v1/question/:questionId/answer', app.jwt, checkQuestionExist, controller.answer.create);
   router.put('/api/v1/question/:questionId/answer/:id', app.jwt, checkAnswerExist, checkAnswerer, controller.answer.update);
   router.delete('/api/v1/question/:questionId/answer/:id', app.jwt, checkAnswerExist, checkAnswerer, controller.answer.delete);
+
+  // Comment
+  router.get('/api/v1/questions/:questionId/answers/:answerId/comments', controller.comment.find);
+  router.post('/api/v1/questions/:questionId/answers/:answerId/comments', app.jwt, controller.comment.create);
+  router.get('/api/v1/questions/:questionId/answers/:answerId/comments/:id', checkCommentExist, controller.comment.findById);
+  router.put('/api/v1/questions/:questionId/answers/:answerId/comments/:id', app.jwt, checkCommentExist, checkCommentator, controller.comment.update);
+  router.delete('/api/v1/questions/:questionId/answers/:answerId/comments/:id', checkCommentExist, controller.comment.delete);
 };
