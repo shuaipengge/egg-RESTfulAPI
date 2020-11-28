@@ -1,5 +1,5 @@
 'use strict';
-
+const bcrypt = require('bcrypt');
 const Service = require('egg').Service;
 
 class UserService extends Service {
@@ -12,9 +12,9 @@ class UserService extends Service {
     if (repeatedUser) {
       return { code: 409, body: { status: false, msg: '邮箱已被注册' } };
     }
-    const name = `可爱的我${Math.random().toString().substring(2, 8)}`;
-    // TODO MD5加密🔐
-    const user = await new this.ctx.model.User({ name, email, password }).save();
+    const name = `用户${Math.random().toString().substring(2, 8)}`;
+    const hash = bcrypt.hashSync(password, this.config.bcrypt.saltRounds);
+    const user = await new this.ctx.model.User({ name, email, password: hash }).save();
     const log = {
       title: 'REGISTER',
       address: this.ctx.request.ip,
@@ -67,22 +67,26 @@ class UserService extends Service {
 
   // 用户登陆
   async login(params) {
-    const user = await this.ctx.model.User.findOne(params).select(' +status');
-    if (!user) {
-      return { code: 401, body: { status: false, msg: '用户名或密码错误' } };
+    const { email, password } = params;
+    const user = await this.ctx.model.User.findOne({ email }).select(' + status + password + name');
+    if (user) {
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        const { _id, name, status } = user;
+        const token = this.app.jwt.sign({
+          _id, name, status,
+        }, this.app.config.jwt.secret);
+        const log = {
+          title: 'LOGIN',
+          address: this.ctx.request.ip,
+          eventer: _id,
+        };
+        await new this.ctx.model.Eventlog(log).save();
+        const userInfo = await this.ctx.model.User.findOne({ email });
+        return { code: 200, body: { status: true, msg: '登陆成功', data: { userInfo, token } } };
+      }
     }
-    const { _id, name, status } = user;
-
-    const token = this.app.jwt.sign({
-      _id, name, status,
-    }, this.app.config.jwt.secret);
-    const log = {
-      title: 'LOGIN',
-      address: this.ctx.request.ip,
-      eventer: _id,
-    };
-    await new this.ctx.model.Eventlog(log).save();
-    return { code: 200, body: { status: true, msg: '登陆成功', data: { user, token } } };
+    return { code: 401, body: { status: false, msg: '用户名或密码错误' } };
   }
 
   // 修改用户信息

@@ -12,7 +12,7 @@ module.exports = app => {
     // 用户的姓名
     name: { type: String, required: false },
     // 等级
-    level: { type: Number, required: false },
+    level: { type: Number, required: false, default: 1 },
     // 用户密码
     password: { type: String, required: true, select: false },
     // 用户背景图片

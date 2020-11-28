@@ -24,6 +24,11 @@ module.exports = appInfo => {
     match: '/api',
   };
 
+  // 密码加密
+  config.bcrypt = {
+    saltRounds: 10,
+  };
+
   config.mongoose = {
     client: {
       // url:'mongodb://admin:123456@localhost:27017/test'
