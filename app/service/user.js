@@ -73,9 +73,10 @@ class UserService extends Service {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
         const { _id, name, status } = user;
+        const { jwt: { secret, expiresIn } } = this.app.config;
         const token = this.app.jwt.sign({
           _id, name, status,
-        }, this.app.config.jwt.secret);
+        }, secret, { expiresIn });
         const log = {
           title: 'LOGIN',
           address: this.ctx.request.ip,

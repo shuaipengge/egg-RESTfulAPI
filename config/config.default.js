@@ -32,7 +32,7 @@ module.exports = appInfo => {
   config.mongoose = {
     client: {
       // url:'mongodb://admin:123456@localhost:27017/test'
-      url: 'mongodb://47.92.89.244:27017/demo1',
+      url: 'mongodb://admin:2020testone@47.92.89.244:27017/admin',
       options: {
         useUnifiedTopology: true,
       },
@@ -48,6 +48,7 @@ module.exports = appInfo => {
 
   config.jwt = {
     secret: '123456',
+    expiresIn: '24h',
   };
 
   // add your user config here
