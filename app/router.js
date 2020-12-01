@@ -93,4 +93,7 @@ module.exports = app => {
   // Eventlog
   router.get('/api/v1/eventlog', app.jwt, checkAdmin, controller.eventlog.index);
   router.get('/api/v1/eventlog/:id', app.jwt, checkAdmin, controller.eventlog.findById);
+
+  // Cloud
+  router.get('/api/v1/ossToken', app.jwt, controller.cloud.getStsToken);
 };

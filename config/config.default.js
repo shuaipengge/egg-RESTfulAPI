@@ -46,6 +46,13 @@ module.exports = appInfo => {
     },
   };
 
+  // STS - OSS
+  config.sts = {
+    endpoint: 'sts.aliyuncs.com', // check this from sts console
+    accessKeyId: 'LTAI4GFu5VVoS2zahAa2qZQx', // check this from aliyun console
+    accessKeySecret: 'xjxKgA2UX1dOr1Y8jZACH22wtzSFhO', // check this from aliyun console
+  };
+
   config.jwt = {
     secret: '123456',
     expiresIn: '24h',
